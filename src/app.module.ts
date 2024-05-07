@@ -1,0 +1,28 @@
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { UsersService } from './services/users/users.service';
+import { UsersController } from './controller/users/users.controller';
+import { PrismaClient } from '@prisma/client';
+import { AuthController } from './controller/auth/auth.controller';
+import { AuthService } from './services/auth/auth.service';
+import { JwtMiddleware } from './middleware/jwt.middleware';
+import { OrganizationController } from './controller/organization/organization.controller';
+import { EoController } from './controller/eo/eo.controller';
+import { VmController } from './controller/vm/vm.controller';
+import { CustomerController } from './controller/customer/customer.controller';
+import { CustomerService } from './services/customer/customer.service';
+import { OrganizationService } from './services/organization/organization.service';
+import { EoService } from './services/eo/eo.service';
+import { VmService } from './services/vm/vm.service';
+
+@Module({
+  imports: [],
+  providers:[UsersService, PrismaClient, AuthService, CustomerService, OrganizationService, EoService, VmService],
+  controllers: [UsersController, AuthController, OrganizationController, EoController, VmController, CustomerController]
+})
+export class AppModule implements NestModule{
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(JwtMiddleware).forRoutes({path:'api/user/detail', method:RequestMethod.GET},
+    {path:'api/user/logout', method:RequestMethod.POST}
+    );
+  }
+}
