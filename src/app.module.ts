@@ -21,7 +21,9 @@ import { VmService } from './services/vm/vm.service';
 })
 export class AppModule implements NestModule{
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(JwtMiddleware).forRoutes({path:'api/user/detail', method:RequestMethod.GET},
+    consumer.apply(JwtMiddleware).forRoutes(
+    {path:'api/user/detail', method:RequestMethod.GET},
+    {path:'api/user/:id', method:RequestMethod.PATCH},
     {path:'api/user/logout', method:RequestMethod.POST}
     );
   }

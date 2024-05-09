@@ -49,7 +49,7 @@ export class AuthService {
             image: result.image,
             verivied: result.verivied,
             role: result.role
-        };
+        }
 
         return BaseResponse.ok([mappedUser])
     }

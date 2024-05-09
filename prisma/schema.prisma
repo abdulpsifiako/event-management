@@ -41,4 +41,43 @@ model HistoryLogin{
   dateLogout DateTime @updatedAt
 }
 
+model Product {
+  id Int @id @default(autoincrement())
+  name String
+  category String
+  description String @db.Text
+  isActive Boolean @default(true)
+  isDeleted Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  showTimes ShowTimes[]
+  locations Locations[]
+  photos Photos[]
+}
 
+model ShowTimes{
+  id Int @id @default(autoincrement())
+  time DateTime @db.Time()
+  product Product @relation(fields: [productId], references: [id])
+  productId Int
+  photos Photos[]
+}
+
+model Locations{
+  id Int @id @default(autoincrement())
+  name String 
+  description String
+  product Product @relation(fields: [productId], references: [id])
+  productId Int
+  photos Photos[]
+}
+
+model Photos {
+  id Int @id @default(autoincrement())
+  url String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  product Product[]
+  showTimes ShowTimes[]
+  locations Locations[]
+}

@@ -21,6 +21,6 @@ async function bootstrap() {
   app.use(helmet());
   app.useGlobalPipes(new ValidationPipe());
   SwaggerModule.setup('swagger-ui', app, document);;
-  await app.listen(3001);
+  await app.listen(3000);
 }
 bootstrap();
