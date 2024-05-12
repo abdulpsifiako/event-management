@@ -13,10 +13,12 @@ import { CustomerService } from './services/customer/customer.service';
 import { OrganizationService } from './services/organization/organization.service';
 import { EoService } from './services/eo/eo.service';
 import { VmService } from './services/vm/vm.service';
+import { GoogleDriveServices } from './services/drive/drive.service';
+import { GoogleDrive } from './config/drive.config';
 
 @Module({
   imports: [],
-  providers:[UsersService, PrismaClient, AuthService, CustomerService, OrganizationService, EoService, VmService],
+  providers:[UsersService, PrismaClient, AuthService, CustomerService, OrganizationService, EoService, VmService, GoogleDriveServices, GoogleDrive],
   controllers: [UsersController, AuthController, OrganizationController, EoController, VmController, CustomerController]
 })
 export class AppModule implements NestModule{
