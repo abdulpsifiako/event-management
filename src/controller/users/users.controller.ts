@@ -3,14 +3,13 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags, ApiBearerAuth, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { Users } from 'src/model/users.model';
 import { BaseResponse } from 'src/response/response';
-import { GoogleDriveServices } from 'src/services/drive/drive.service';
 import { UsersService } from 'src/services/users/users.service';
 
 
 @ApiTags("Users")
 @Controller('api/user')
 export class UsersController {
-    constructor(private userService: UsersService, private googleDriveService : GoogleDriveServices){}
+    constructor(private userService: UsersService){}
 
     @ApiOperation({summary:"Detail User"})
     @ApiBearerAuth()
@@ -44,6 +43,6 @@ export class UsersController {
         }
       })
       async uploadFile(@UploadedFile() file: Express.Multer.File, @Request() req:Request):Promise<BaseResponse<any>> {
-        return this.googleDriveService.updatePhoto(file, req['x-decodetoken']);
+        return this.userService.updatePhotos(file, req['x-decodetoken']);
     }
 }

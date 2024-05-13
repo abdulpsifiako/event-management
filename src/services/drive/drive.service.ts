@@ -14,7 +14,7 @@ export class GoogleDriveServices {
     this.drive= this.driveGoogle.auth()
   }
 
-  async updatePhoto(file, detail):Promise<BaseResponse<any>>{
+  async updatePhoto(file):Promise<BaseResponse<any>>{
     try {
       const { buffer} = file
       const fileBuffer = Buffer.from(buffer)
@@ -32,16 +32,7 @@ export class GoogleDriveServices {
         media: media,
         fields: 'id',
       })
-      await this.prisma.users.update({
-        where:{
-          id: detail.id
-        },
-        data:{
-          image: result.data.id,
-          driveName:name
-        }
-      })
-      return BaseResponse.ok([{id:result.data.id, name:name}],"Success update photo")
+      return {image:result.data.id, driveName:name}
     } catch (error) {
       return BaseResponse.errorResponse(error.message)
     }

@@ -46,22 +46,22 @@ model Product {
   id Int @id @default(autoincrement())
   name String
   category String
+  theme String 
   description String @db.Text
   isActive Boolean @default(true)
   isDeleted Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  showTimes ShowTimes[]
   locations Locations[]
   photos Photos[]
+  tickets Ticket[]
 }
 
 model ShowTimes{
   id Int @id @default(autoincrement())
   time DateTime @db.Time()
-  product Product @relation(fields: [productId], references: [id])
-  productId Int
-  photos Photos[]
+  locations Locations @relation(fields: [locationsId], references: [id])
+  locationsId Int
 }
 
 model Locations{
@@ -71,14 +71,25 @@ model Locations{
   product Product @relation(fields: [productId], references: [id])
   productId Int
   photos Photos[]
+  showtimes ShowTimes[]
 }
 
 model Photos {
   id Int @id @default(autoincrement())
   url String
+  driveName String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   product Product[]
-  showTimes ShowTimes[]
   locations Locations[]
+}
+
+model Ticket{
+  id Int @id @default(autoincrement())
+  name String
+  price BigInt
+  product Product @relation(fields: [productId], references: [id])
+  productId Int
+  createdAt DateTime @default(now())
+  updateAt DateTime @updatedAt
 }

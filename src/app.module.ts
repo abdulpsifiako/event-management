@@ -27,7 +27,8 @@ export class AppModule implements NestModule{
     {path:'api/user/detail', method:RequestMethod.GET},
     {path:'api/user/:id', method:RequestMethod.PATCH},
     {path:'api/user/logout', method:RequestMethod.POST},
-    {path:'api/user/upload', method:RequestMethod.POST}
+    {path:'api/user/upload', method:RequestMethod.POST},
+    {path:'api/organization/product/create', method:RequestMethod.POST}
     );
   }
 }

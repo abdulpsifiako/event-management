@@ -3,11 +3,12 @@ import { PrismaClient } from '@prisma/client';
 import { parse } from 'path';
 import { Users } from 'src/model/users.model';
 import { BaseResponse } from 'src/response/response';
+import { GoogleDriveServices } from '../drive/drive.service';
 
 @Injectable()
 export class UsersService {
 
-    constructor( private prisma :PrismaClient){}
+    constructor( private prisma :PrismaClient, private googleDrive : GoogleDriveServices){}
 
     async detail(detail):Promise<BaseResponse<Users>>{
         return BaseResponse.ok([detail])
@@ -44,5 +45,16 @@ export class UsersService {
             image:save.image
         }as Users
         return BaseResponse.ok([result])
+    }
+
+    async updatePhotos(file, detail):Promise<BaseResponse<any>>{
+        const uploadPhoto = await this.googleDrive.updatePhoto(file)
+        await this.prisma.users.update({
+            where:{
+                id:detail.id
+            },
+            data:uploadPhoto
+        })
+        return BaseResponse.ok([uploadPhoto])
     }
 }
