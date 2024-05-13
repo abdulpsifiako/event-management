@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
 export class BaseResponse<T> {
-  static ok(data: any, pagination?:any, message: string = 'Success', statusCode: number = HttpStatus.OK) {
+  static ok(data: any, message: string = 'Success', statusCode: number = HttpStatus.OK, pagination?:any) {
     return {
       statusCode,
       message,

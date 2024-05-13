@@ -28,9 +28,8 @@ export class JwtMiddleware implements NestMiddleware {
                     id: 'desc',
                   },
             })
-            console.log(checkHistory)
+            
             if(!checkHistory.isLogin){
-                console.log(true)
                 return this.sendUnauthorizedResponse(res, "Please login first");
             }
 

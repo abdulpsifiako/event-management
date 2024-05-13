@@ -26,7 +26,9 @@ export class UsersController {
         return this.userService.patch(id, body);
     }
 
+    @ApiOperation({summary:"Update photo users"})
     @Post("upload")
+    @ApiBearerAuth()
     @UseInterceptors(FileInterceptor('file'))
     @ApiConsumes('multipart/form-data')
     @ApiBody({
@@ -41,7 +43,7 @@ export class UsersController {
           }
         }
       })
-      async uploadFile(@UploadedFile() file: Express.Multer.File):Promise<BaseResponse<any>> {
-        return this.googleDriveService.uploadFile(file);
+      async uploadFile(@UploadedFile() file: Express.Multer.File, @Request() req:Request):Promise<BaseResponse<any>> {
+        return this.googleDriveService.updatePhoto(file, req['x-decodetoken']);
     }
 }
