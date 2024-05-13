@@ -1,4 +1,4 @@
-import { Controller ,Post, Body, UseInterceptors, UploadedFile} from '@nestjs/common';
+import { Controller ,Post, Body, UseInterceptors, UploadedFile, Request, Param} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags, ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Products } from 'src/model/product.model';
@@ -18,7 +18,7 @@ export class OrganizationController {
     }
 
     @ApiOperation({summary:"Update photo product"})
-    @Post("/upload")
+    @Post("/upload/:productId")
     @ApiBearerAuth()
     @UseInterceptors(FileInterceptor('file'))
     @ApiConsumes('multipart/form-data')
@@ -34,8 +34,7 @@ export class OrganizationController {
           }
         }
       })
-    uploadPhotos(@UploadedFile() file: Express.Multer.File):Promise<BaseResponse<any>>{
-        console.log(file)
-        return;
+    uploadPhotos(@Param("productId") productId :string,@UploadedFile() file: Express.Multer.File, @Request() req:Request):Promise<BaseResponse<any>>{
+        return this.organization.uploadPhotos(productId, file, req['x-decodetoken'])
     }
 }
