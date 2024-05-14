@@ -2,8 +2,9 @@ import { Controller ,Post, Body, UseInterceptors, UploadedFile, Request, Param} 
 import { ApiBearerAuth, ApiOperation, ApiTags, ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Products } from 'src/model/product.model';
-import { BaseResponse } from 'src/response/response';
 import { OrganizationService } from 'src/services/organization/organization.service';
+import { Locations } from 'src/model/location.model';
+import { ShowTimes } from 'src/model/showtime.model';
 
 @ApiTags("Organization")
 @Controller('api/organization')
@@ -13,7 +14,7 @@ export class OrganizationController {
     @Post('/product/create')
     @ApiOperation({summary:'Create product'})
     @ApiBearerAuth()
-    create(@Body() product:Products):Promise<BaseResponse<Products>>{
+    create(@Body() product:Products){
         return this.organization.create(product);
     }
 
@@ -34,7 +35,43 @@ export class OrganizationController {
           }
         }
       })
-    uploadPhotos(@Param("productId") productId :string,@UploadedFile() file: Express.Multer.File, @Request() req:Request):Promise<BaseResponse<any>>{
+    uploadPhotos(@Param("productId") productId :string,@UploadedFile() file: Express.Multer.File, @Request() req:Request){
         return this.organization.uploadPhotos(productId, file, req['x-decodetoken'])
     }
+
+    @ApiOperation({summary:'Add location to product'})
+    @Post("/product/location/:productId")
+    @ApiBearerAuth()
+    addLocation(@Param('productId')productId:string , @Body() payload:Locations){
+      return this.organization.addLocation(productId, payload)
+    }
+
+    @ApiOperation({summary:'Add photo to location'})
+    @Post('/product/:location/photos')
+    @ApiBearerAuth()
+    @UseInterceptors(FileInterceptor('file'))
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+        required: true,
+        schema: {
+          type: "object",
+          properties: {
+            file: {
+              type: "string",
+              format: "binary",
+            }
+          }
+        }
+      })
+    uploadPhotoLocations(@UploadedFile() file: Express.Multer.File, @Param('location') location:number){
+      return this.organization.addPhotosLocation(file, location)
+    }
+
+    @ApiOperation({summary:'Add show times to some locations'})
+    @Post('product/:location/showtimes')
+    @ApiBearerAuth()
+    addShowtimes(@Body() payload:ShowTimes, @Param('location') location:string){
+      return this.organization.addShowtimeLocation(location, payload)
+    }
+
 }

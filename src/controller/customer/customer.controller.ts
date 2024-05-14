@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { BaseResponse } from 'src/response/response';
 import { CustomerService } from 'src/services/customer/customer.service';
@@ -8,9 +8,15 @@ import { CustomerService } from 'src/services/customer/customer.service';
 export class CustomerController {
     constructor(private customerService:CustomerService){}
 
-    @ApiOperation(({summary:'Read data product'}))
+    @ApiOperation({summary:'Read data product'})
     @Get("product")
-    readProduct():Promise<BaseResponse<any>>{
+    readProduct(){
         return this.customerService.readProduct();
+    }
+
+    @ApiOperation({summary:'Detail Product'})
+    @Get('product/detai/:productId')
+    detailProduct(@Param('productId') productId: string){
+        return this.customerService.detailProduct(productId)
     }
 }

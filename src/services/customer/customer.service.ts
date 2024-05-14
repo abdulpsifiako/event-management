@@ -20,4 +20,32 @@ export class CustomerService {
         })
         return BaseResponse.ok(data)
     }
+
+    async detailProduct(productId):Promise<BaseResponse<any>>{
+        const data = await this.prisma.product.findFirstOrThrow({
+            where:{
+                AND:[
+                    {
+                        isActive:true
+                    },
+                    {
+                        id:parseInt(productId)
+                    },
+                    {
+                        isDeleted:false
+                    }
+                ]
+            },
+            include:{
+                photos:true,
+                locations:{
+                    include:{
+                        photos:true,
+                        showtimes:true
+                    }
+                }
+            }
+        })
+        return BaseResponse.ok([data])
+    }
 }
