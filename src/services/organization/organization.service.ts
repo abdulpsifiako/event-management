@@ -18,6 +18,22 @@ export class OrganizationService {
         if(!detail || detail.role !== "Organization"){
             BaseResponse.unauthorizedResponse();
         }
+        const check = await this.prisma.product.findFirst({
+            where:{
+                AND:[
+                    {
+                        id:parseInt(productId)
+                    },
+                    {
+                        isDeleted:false
+                    }
+                ]
+            }
+        })
+        
+        if(!check){
+            return BaseResponse.notFoundResponse()
+        }
         const uploadPhoto = await this.googleDrive.updatePhoto(file) as UploadedPhoto;
         
         const result = await this.prisma.photos.create({
@@ -34,6 +50,22 @@ export class OrganizationService {
         return BaseResponse.ok([result]);
     }
     async addLocation(productId, location):Promise<BaseResponse<any>>{
+        const check = await this.prisma.product.findFirst({
+            where:{
+                AND:[
+                    {
+                        id:parseInt(productId)
+                    },
+                    {
+                        isDeleted:false
+                    }
+                ]
+            }
+        })
+        
+        if(!check){
+            return BaseResponse.notFoundResponse()
+        }
         const data = await this.prisma.locations.create({
             data: {
                 name: location.name,
@@ -46,6 +78,16 @@ export class OrganizationService {
     }
 
     async addPhotosLocation(file, location):Promise<BaseResponse<any>>{
+        const check= await this.prisma.locations.findFirst({
+            where:{
+                id:parseInt(location)
+            }
+        })
+
+        if(!check){
+            return BaseResponse.notFoundResponse()
+        }
+
         const uploadPhoto = await this.googleDrive.updatePhoto(file) as UploadedPhoto
         const result = await this.prisma.photos.create({
             data:{
@@ -62,6 +104,18 @@ export class OrganizationService {
     }
 
     async addShowtimeLocation(location, payload:{time:string}):Promise<BaseResponse<any>>{
+
+        const check= await this.prisma.locations.findFirst({
+            where:{
+                id:parseInt(location)
+            }
+        })
+        
+        if(!check){
+            return BaseResponse.notFoundResponse()
+        }
+
+
         const result = await this.prisma.showTimes.create({
             data:{
                 time:new Date(`1970-01-01T${payload.time}`),
@@ -69,5 +123,32 @@ export class OrganizationService {
             }
         })
         return BaseResponse.ok([result])
+    }
+
+    async addTicketProdutc(productId, payload:{name:string, price:number}):Promise<BaseResponse<any>>{
+        const check = await this.prisma.product.findFirst({
+            where:{
+                AND:[
+                    {
+                        id:parseInt(productId)
+                    },
+                    {
+                        isDeleted:false
+                    }
+                ]
+            }
+        })
+        
+        if(!check){
+            return BaseResponse.notFoundResponse()
+        }
+        await this.prisma.ticket.create({
+            data:{
+                name:payload.name,
+                price:payload.price,
+                productId:parseInt(productId)
+            }
+        })
+        return BaseResponse.ok([payload])
     }
 }

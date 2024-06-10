@@ -5,6 +5,7 @@ import { Products } from 'src/model/product.model';
 import { OrganizationService } from 'src/services/organization/organization.service';
 import { Locations } from 'src/model/location.model';
 import { ShowTimes } from 'src/model/showtime.model';
+import { Ticket } from 'src/model/ticket.model';
 
 @ApiTags("Organization")
 @Controller('api/organization')
@@ -74,4 +75,10 @@ export class OrganizationController {
       return this.organization.addShowtimeLocation(location, payload)
     }
 
+    @ApiOperation({summary:'Add show times to some locations'})
+    @Post('product/:productId/ticket')
+    @ApiBearerAuth()
+    addTicket(@Body() payload:Ticket, @Param('productId') productId:string){
+      return this.organization.addTicketProdutc(productId, payload)
+    }
 }

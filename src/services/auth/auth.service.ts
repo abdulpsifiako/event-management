@@ -18,8 +18,9 @@ export class AuthService {
                 ]
             }
         })
-        if (user){
-            return BaseResponse.unauthorizedResponse("Username/email sudah digunakan")
+
+        if(user){
+            return BaseResponse.unauthorizedResponse("Username/email already used")
         }
 
         const hash = await argon2.hash(payload.password)

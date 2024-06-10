@@ -22,6 +22,22 @@ export class CustomerService {
     }
 
     async detailProduct(productId):Promise<BaseResponse<any>>{
+        const check = await this.prisma.product.findFirst({
+            where:{
+                AND:[
+                    {
+                        id:parseInt(productId)
+                    },
+                    {
+                        isDeleted:false
+                    }
+                ]
+            }
+        })
+        
+        if(!check){
+            return BaseResponse.notFoundResponse()
+        }
         const data = await this.prisma.product.findFirstOrThrow({
             where:{
                 AND:[
@@ -37,15 +53,41 @@ export class CustomerService {
                 ]
             },
             include:{
-                photos:true,
+                photos:{
+                    select:{
+                        id:true,
+                        driveName:true,
+                        url:true
+                    }
+                },
                 locations:{
                     include:{
-                        photos:true,
-                        showtimes:true
+                        photos:{
+                            select:{
+                                id:true,
+                                driveName:true,
+                                url:true
+                            }
+                        },
+                        showtimes:{
+                            select:{
+                                id:true,
+                                time:true
+                            }
+                        }
+                    }
+                },
+                tickets:{
+                    select:{
+                        id:true,
+                        name:true,
+                        price:true,
                     }
                 }
             }
         })
-        return BaseResponse.ok([data])
+        return BaseResponse.ok([JSON.parse(JSON.stringify(data, (key, value) => {
+            return typeof value === 'bigint' ? value.toString() : value;
+        }))])
     }
 }
